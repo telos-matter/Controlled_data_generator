@@ -11,7 +11,7 @@ from numbers import Number
 from numpy.random import Generator
 from inspect import signature
 
-def generate (f: Callable[..., Number], intervals: list[tuple[Number, Number]], *, n_samples: int=100, noise: float=0.0, generator: Generator | int=None, y_interval: None | tuple[Number | None, Number | None]=None, n_features: None | int=None) -> tuple[np.array, np.array]:
+def generate (f: Callable[..., Number], intervals: list[tuple[Number, Number]], *, n_samples: int=100, noise: float=0.0, generator: Generator | int=None, y_interval: None | tuple[Number | None, Number | None]=None, n_features: None | int=None) -> tuple[np.ndarray, np.ndarray]:
     '''Generates a random yet controlled dataset for your regression
     problems. That is, your dataset will follow a function you define
     
@@ -27,7 +27,7 @@ def generate (f: Callable[..., Number], intervals: list[tuple[Number, Number]], 
     of features of your dataset is drawn from the length of the list.
     
     ### Optional parameters:
-    - `n_samples`: the number of data points, a.k.a samples of the dataset
+    - `n_samples`: the number of data points, a.k.a number of samples of the dataset
     - `noise`: the standard deviation of the gaussian noise
     that is added to the output after applying the callable f. Must be
     greater than or equal to zero.
