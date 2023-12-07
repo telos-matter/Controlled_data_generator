@@ -16,5 +16,5 @@ Read the documentation of the function.
 - Hands to type with on the keyboard
 - Some basic `python` knowledge
 - Knowledge on how to quit `Vim`
-- Knowledge about **all** the non-trivial zeros to the Riemann-Zeta function
+- Knowledge about **all** the non-trivial zeros of the Riemann-Zeta function
 - Latest `numpy` version
