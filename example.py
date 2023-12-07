@@ -1,5 +1,5 @@
 '''
-Suppose We want to create data for a regression problem in which
+Suppose we want to create data for a regression problem in which
 we want to predict students' scores based on their latest score and how many
 hours they have studied over the past week before the test. Then
 we could do something like so 
@@ -15,7 +15,7 @@ intervals = [
     (0, 100), # Their previous test marks are from 0 to a 100
     (0, 20)]  # And they could have studied from 0 to 20 hours during the previous week
 
-# It does not make sense for the score to be outside the 0 - 100 range so
+# It does not make sense for the score to be outside the 0 - 100 range so we define the y range too
 y_interval = (0, 100) 
 
 xs, y = generate(f, intervals, n_samples=20, noise=7.5, y_interval=y_interval)
