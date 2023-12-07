@@ -11,7 +11,7 @@ from numbers import Number
 from numpy.random import Generator
 from inspect import signature
 
-def generate (f: Callable, intervals: list[tuple[Number, Number]], *, n_samples: int=100, noise: float=0.0, generator: Generator | int=None, n_features: None | int=None) -> tuple[np.array, np.array]:
+def generate (f: Callable[..., Number], intervals: list[tuple[Number, Number]], *, n_samples: int=100, noise: float=0.0, generator: Generator | int=None, y_interval: None | tuple[Number | None, Number | None]=None, n_features: None | int=None) -> tuple[np.array, np.array]:
     '''Generates a random yet controlled dataset for your regression
     problems. That is, your dataset will follow a function you define
     
@@ -34,6 +34,14 @@ def generate (f: Callable, intervals: list[tuple[Number, Number]], *, n_samples:
     - `generator`: a numpy Generator (the newer version of RandomState)
     to generate the data points with. Or an int representing the seed
     to create the generator with. Or None to create a new random one.
+    - `y_interval`: if not None then it should be a tuple 
+    that determines the half open interval [lower, upper) (lower
+    is included, upper is not) that the output data should lay in. If a y
+    value is not within the interval it is removed as well as its
+    corresponding x value and they are not substituted, which
+    means that the actual number of samples
+    can be less than or equal to n_samples. If a tuple is provided
+    then either lower or upper can be None but not both.
     - `n_features`: an optional assertion parameter that could
     be passed if the user wants to assert that the number of
     features of the dataset is that he expect. Would
@@ -62,6 +70,9 @@ def generate (f: Callable, intervals: list[tuple[Number, Number]], *, n_samples:
     check(isinstance(noise, Number), TypeError, f"The noise should a number")
     check(noise >= 0.0, ValueError, f"The noise should be greater than or equal to zero. {noise} was passed")
     check(generator is None or type(generator) == int or type(generator) == Generator, TypeError, f"The generator must be an int, an instance of the numpy Generator or None. {generator} was passed")
+    check(y_interval is None or type(y_interval) == tuple, TypeError, f"The y_interval should be a tuple, not `{type(y_interval)}`")
+    check(y_interval is None or len(y_interval) == 2, ValueError, f"The y_interval should contain exactly two elements, this one has {y_interval}")
+    check(y_interval is None or not (y_interval[0] is None and y_interval[1] is None), ValueError, f"Either the lower or upper bounds of the y_interval can be None but not both; {y_interval}")
     check(n_features is None or n_features == len(intervals), AssertionError, f"The length of the intervals list (which is the number of features) is different than the given n_features. Intervals entails that there is {len(intervals)} features, yet n_features is {n_features}")
     
     n_features = len(intervals)
@@ -84,5 +95,20 @@ def generate (f: Callable, intervals: list[tuple[Number, Number]], *, n_samples:
     
     if noise > 0.0:
         y += generator.normal(loc=0.0, scale=noise, size=n_samples)
+    
+    if y_interval is not None:
+        interval_checker = None
+        lower, upper = y_interval
+        if lower is None: # Only check < upper
+            assert upper is not None, f"Unreachable, checked at entry"
+            interval_checker = lambda value: value < upper
+        elif upper is None: # Only check >= lower
+            interval_checker = lambda value: lower <= value
+        else: # Check both
+            interval_checker = lambda value: lower <= value < upper
+        
+        indices = [i for i in range(n_samples) if not interval_checker(y[i])]
+        xs = np.delete(xs, indices, 0)
+        y = np.delete(y, indices)
     
     return (xs, y)
