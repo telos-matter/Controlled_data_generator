@@ -18,7 +18,7 @@ intervals = [
 # It does not make sense for the score to be outside the 0 - 100 range so
 y_interval = (0, 100) 
 
-x, y = generate(f, intervals, n_samples=20, noise=7.5, y_interval=y_interval)
+xs, y = generate(f, intervals, n_samples=20, noise=7.5, y_interval=y_interval)
 
-print(x)
+print(xs)
 print(y)
