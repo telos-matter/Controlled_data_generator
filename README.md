@@ -1,4 +1,4 @@
-# Controlled data generator ![DEVELOPMENT STATUS: working version](https://badgen.net/badge/DEVELOPMENT%20STATUS/working%20version/green)
+# Controlled data generator ![DEVELOPMENT STATUS: completed](https://badgen.net/badge/DEVELOPMENT%20STATUS/completed/green)
 
 Generates random yet controlled data for your regression problems.
 
